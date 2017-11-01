@@ -1,0 +1,43 @@
+version: '3'
+services: 
+   es:
+      image: "elasticsearch:5.1.1"
+      ports: 
+          - "9200:9200"
+          - "9300:9300"
+      volumes:
+         - data-elasticsearch:/usr/share/elasticsearch/data
+      networks:
+         - monitoring
+      labels:
+         - monitoring.elasticsearch
+   prometheus:
+      image: "prom/prometheus:v1.8.1"
+      ports:
+         - "9090:9090"
+      networks:
+         - monitoring
+      labels:
+         - monitoring.prometheus
+   grafana:
+      image: "grafana/grafana:4.5.2"
+      ports:
+         - "3000:3000"
+      networks:
+         - monitoring
+      labels:
+         - monitoring.grafana
+   alertmanager:
+      image: "prom/alertmanager"
+      ports:
+        - "9093:9093"
+      networks:
+        - monitoring
+      labels:
+        - monitoring.alertmanager
+volumes:
+   data-elasticsearch:
+   data-prometheus:
+networks:
+   monitoring:
+      driver: bridge
